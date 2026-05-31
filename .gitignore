@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.venv/
+venv/
+
+# Large binary / regenerated artifacts
+output/structures/
+output/tool_runs/
+output/*.log
+
+# Keep the demo reports + JSON traces
+!output/reports/
