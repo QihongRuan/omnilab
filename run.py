@@ -19,8 +19,8 @@ import datetime as dt
 import sys
 from pathlib import Path
 
-from omnilab.agent import run_agent, save_trace
-from omnilab.report import save_markdown
+import asyncio
+from omnilab.agent_v3 import run as run_v3
 
 
 DEFAULT_QUESTION = (
@@ -33,29 +33,13 @@ DEFAULT_QUESTION = (
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="OmniLab — Gemini × GDM Science Skills agent")
+    parser = argparse.ArgumentParser(description="OmniLab — Antigravity SDK + DeepMind Science Skills agent")
     parser.add_argument("question", nargs="?", default=DEFAULT_QUESTION, help="Research question")
     parser.add_argument("--name", default=None, help="Output filename stem (default: timestamp)")
-    parser.add_argument("--max-iters", type=int, default=20)
     args = parser.parse_args()
 
     stem = args.name or dt.datetime.utcnow().strftime("run_%Y%m%d_%H%M%S")
-    out_dir = Path("output") / "reports"
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    print(f"\n{'=' * 70}\nOmniLab — research question\n{'=' * 70}")
-    print(args.question)
-    print(f"{'=' * 70}\n")
-
-    trace = run_agent(args.question, max_iters=args.max_iters)
-
-    trace_path = save_trace(trace, out_dir / f"{stem}.trace.json")
-    md_path = save_markdown(trace, out_dir / f"{stem}.md")
-
-    print(f"\n{'=' * 70}")
-    print(f"Saved trace : {trace_path}")
-    print(f"Saved report: {md_path}")
-    print(f"{'=' * 70}\n")
+    asyncio.run(run_v3(args.question, name=stem))
     return 0
 
 
